@@ -130,3 +130,6 @@ dmypy.json
 
 # macOS
 .DS_Store
+
+nm_cavia/rl/.npy
+nm_cavia/rl/high_reward_path_log_b.csv
