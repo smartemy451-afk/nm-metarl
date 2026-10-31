@@ -1,7 +1,7 @@
 import multiprocessing as mp
 import sys
 
-import gym
+import gymnasium as gym
 import numpy as np
 
 is_py2 = (sys.version[0] == '2')

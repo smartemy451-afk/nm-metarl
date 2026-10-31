@@ -33,26 +33,39 @@ class LinearFeatureBaseline(nn.Module):
     def fit(self, episodes):
         # sequence_length * batch_size x feature_size
         featmat = self._feature(episodes).view(-1, self.feature_size)
+
         # sequence_length * batch_size x 1
         returns = episodes.returns.view(-1, 1)
 
         reg_coeff = self._reg_coeff
-        eye = torch.eye(self.feature_size, dtype=torch.float32,
-                        device=self.linear.weight.device)
+
+        eye = torch.eye(
+            self.feature_size,
+            dtype=torch.float32,
+            device=self.linear.weight.device
+        )
+
         for _ in range(5):
             try:
-                coeffs, _ = torch.gels(
-                    torch.matmul(featmat.t(), returns),
-                    torch.matmul(featmat.t(), featmat) + reg_coeff * eye
-                )
+                A = torch.matmul(featmat.t(), featmat) + reg_coeff * eye
+                B = torch.matmul(featmat.t(), returns)
+
+                coeffs = torch.linalg.lstsq(A, B).solution
+
                 break
+
             except RuntimeError:
                 reg_coeff += 10
+
         else:
-            raise RuntimeError('Unable to solve the normal equations in '
-                               '`LinearFeatureBaseline`. The matrix X^T*X (with X the design '
-                               'matrix) is not full-rank, regardless of the regularization '
-                               '(maximum regularization: {0}).'.format(reg_coeff))
+            raise RuntimeError(
+                'Unable to solve the normal equations in '
+                '`LinearFeatureBaseline`. The matrix X^T*X '
+                '(with X the design matrix) is not full-rank, '
+                'regardless of the regularization '
+                '(maximum regularization: {0}).'.format(reg_coeff)
+            )
+
         self.linear.weight.data = coeffs.data.t()
 
     def forward(self, episodes):

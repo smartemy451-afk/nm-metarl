@@ -2,7 +2,7 @@ import numpy as np
 import multiprocessing as mp
 from inspect import signature
 
-import gym
+import gymnasium as gym
 import torch
 
 from envs.subproc_vec_env import SubprocVecEnv
@@ -14,7 +14,7 @@ def make_env(env_name, env_config_path=None):
     def _make_env():
         env = gym.make(env_name)
         if env_config_path is not None:
-            env.set_config(env_config_path)
+            env.unwrapped.set_config(env_config_path)
         return env
 
     return _make_env
@@ -36,7 +36,7 @@ class BatchSampler(object):
         if env_config_path is not None:
             print(env_config_path)
             self._env.set_config(env_config_path)
-        self._env.seed(seed)
+        self._env.unwrapped.seed(seed)
 
     def sample(self, policy, params=None, gamma=0.95, batch_size=None):
         if batch_size is None:

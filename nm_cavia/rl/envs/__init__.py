@@ -1,4 +1,4 @@
-from gym.envs.registration import register
+from gymnasium.envs.registration import register
 
 # Bandit
 # ----------------------------------------
@@ -70,8 +70,10 @@ register(
 # CT-graph
 # ----------------------------------------
 register(
-    id='CTgraphEnvGoalChange-v0',
-    entry_point='envs.ctgraph:CTgraphEnvGoalChange',
+    id="CTgraphEnvGoalChange-v0",
+    entry_point="envs.ctgraph:CTgraphEnvGoalChange",
+    disable_env_checker=True,
+    order_enforce=False,
 )
 
 # Minecraft

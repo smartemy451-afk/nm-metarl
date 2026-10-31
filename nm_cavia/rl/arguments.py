@@ -33,6 +33,34 @@ def parse_args():
                         help='number of neuromodulation units per layer')
     parser.add_argument('--nm-gate', type=str, default='hard',
                         help='`hard` or `soft` gating via neuromodulation')
+    # Epigenetic-inspired CAVIA
+    parser.add_argument(
+        '--epigenetic',
+        action='store_true',
+        default=False,
+        help='turn on persistent epigenetic regulation'
+    )
+
+    parser.add_argument(
+        '--epi-size',
+        type=int,
+        default=8,
+        help='size of persistent epigenetic regulatory state'
+    )
+
+    parser.add_argument(
+        '--epi-decay',
+        type=float,
+        default=0.2,
+        help='epigenetic state update rate'
+    )
+
+    parser.add_argument(
+        '--epi-strength',
+        type=float,
+        default=1.0,
+        help='strength of epigenetic modulation'
+    )
 
     # Run MAML instead of CAVIA
     parser.add_argument('--maml', action='store_true', default=False,

@@ -38,3 +38,5 @@ class NMLinear(Module):
     def extra_repr(self):
         return 'in_features={}, out_features={}, nm_features={}'.format(self.in_features,\
                 self.out_features, self.nm_features)
+
+NMLinearReduced = NMLinear
