@@ -26,6 +26,7 @@ from policies.normal_mlp import (
     NMCaviaMLPPolicy
 )
 from policies.epigenetic_categorical_mlp import EpiCaviaCategoricalMLPPolicy
+from policies.nm_epi_categorical_mlp import NMEpiCaviaCategoricalMLPPolicy
 from sampler import BatchSampler
 
 
@@ -106,14 +107,7 @@ def main(args):
         ]
     )
 
-    if (
-        args.epigenetic
-        and args.neuromodulation
-    ):
-        raise ValueError(
-            'Choose either --epigenetic or '
-            '--neuromodulation, not both.'
-        )
+
 
     if (
         args.epigenetic
@@ -134,14 +128,15 @@ def main(args):
             'CT-graph only.'
         )
 
-    if args.epigenetic:
+    if args.epigenetic and args.neuromodulation:
+        prefix = 'nm_epi_'
+    elif args.epigenetic:
         prefix = 'epi_'
-
     elif args.neuromodulation:
         prefix = 'nm_'
-
     else:
         prefix = ''
+
 
     method_used = (
         'maml'
@@ -316,7 +311,38 @@ def main(args):
             '`args.activation`'
         )
 
-    if continuous_actions:
+    if args.epigenetic and args.neuromodulation:
+
+        if args.maml:
+            raise NotImplementedError(
+                'NM+EPI V2 currently supports CAVIA only.'
+            )
+
+        if continuous_actions:
+            raise NotImplementedError(
+                'NM+EPI V2 currently supports discrete CT-graph only.'
+            )
+
+        print(
+            'discrete actions / cavia / '
+            'with neuromodulation + epigenetic regulation'
+        )
+
+        policy = NMEpiCaviaCategoricalMLPPolicy(
+            input_dim,
+            output_dim,
+            hidden_sizes=(args.hidden_size,) * args.num_layers,
+            num_context_params=args.num_context_params,
+            device=args.device,
+            nm_size=args.nm_size,
+            nm_gate=args.nm_gate,
+            epi_size=args.epi_size,
+            epi_decay=args.epi_decay,
+            epi_strength=args.epi_strength,
+            nonlinearity=nonlinearity
+        )
+
+    elif continuous_actions:
 
         if not args.maml:
 
