@@ -133,3 +133,12 @@ dmypy.json
 
 nm_cavia/rl/.npy
 nm_cavia/rl/high_reward_path_log_b.csv
+experiment_logs/
+experiment_logs_500/
+nm_cavia/rl/logs/
+nm_cavia/rl/saves/
+*.npy
+high_reward_path_log_b.csv
+.DS_Store
+__pycache__/
+*.pyc
